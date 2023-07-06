@@ -1,7 +1,6 @@
 {
   "name": "node_crud_app",
   "version": "1.0.0",
-  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,5 +17,18 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cletuskingdom/nodetest.git"
+  },
+  "keywords": [
+    "Node",
+    "test"
+  ],
+  "bugs": {
+    "url": "https://github.com/cletuskingdom/nodetest/issues"
+  },
+  "homepage": "https://github.com/cletuskingdom/nodetest#readme",
+  "description": ""
 }
