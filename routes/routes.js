@@ -18,10 +18,20 @@ var upload = multer({
 }).single("image");
 
 // Home route
-router.get("/", (req, res) => {
-	res.render("welcome", {
-		title: "Welcome Page",
-	});
+router.get("/", async (req, res) => {
+	// Get all users
+	var users = await User.find();
+
+	if (!users) {
+		res.json({
+			message: err.message,
+		});
+	} else {
+		res.render("welcome", {
+			title: "Home Page",
+			users: users,
+		});
+	}
 });
 
 // View add users page

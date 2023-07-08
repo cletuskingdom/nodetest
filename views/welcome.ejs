@@ -13,39 +13,46 @@
                     <strong><%= message.message %></strong>
                 </div>
             <% } %>
-            <table class="table">
-                <thead class="table-dark text-center">
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Phone</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
 
-                <tbody>
-                    <tr class="text-center">
-                        <th scope="row">1</th>
-                        <td>
-                            <img src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fpluspng.com%2Fimg-png%2Fbootstrap-png-bootstrap-512.png&f=1&nofb=1&ipt=af6c3feef61fa2b92c0cb9c617e7f3b31c3b1efc88b1a27fd33b788c6ecc2ed9&ipo=images" class="img-fluid" style="width: 50px; height: 50px;">
-                        </td>
-                        <td>Otto</td>
-                        <td>otto@gmail.com</td>
-                        <td>07063964065</td>
-                        <td>
-                            <a href=#!" class="text-success">
-                                <i class="fa-lg mx-1 fa fas-solid fa-edit"></i>
-                            </a>
+            <% if(users != '') { %>
+                <table class="table">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
 
-                            <a href="#!" class="text-danger">
-                                <i class="fa-lg mx-1 fa fas-solid fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    <tbody>
+                        <% users.forEach((row, index) => { %>
+                            <tr class="text-center">
+                                <th scope="row"><%= index%></th>
+                                <td>
+                                    <img src="<%= row.image %>" width="50" class="img-thumbnail" />
+                                </td>
+                                <td><%= row.name %></td>
+                                <td><%= row.email %></td>
+                                <td><%= row.phone %></td>
+                                <td>
+                                    <a href="./edit/<%= row._id %>" class="text-success">
+                                        <i class="fa-lg mx-1 fa fas-solid fa-edit"></i>
+                                    </a>
+    
+                                    <a href="./delete/<%= row._id %>" class="text-danger">
+                                        <i class="fa-lg mx-1 fa fas-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% })%>
+                    </tbody>
+                </table>
+            <% } else {%>
+                <h1 class="text-center text-secondary mt-5">No users found in the database</h1>
+            <%}%>
         </div>
     </div>
 </section>
