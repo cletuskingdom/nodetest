@@ -8,4 +8,11 @@ router.get("/", (req, res) => {
 	});
 });
 
+// Add users
+router.get("/add", (req, res) => {
+	res.render("add", {
+		title: "Add users",
+	});
+});
+
 module.exports = router;

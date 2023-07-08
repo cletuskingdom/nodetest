@@ -1,0 +1,41 @@
+
+<%- include('layouts/header') %>
+
+<section>
+    <div class="container py-5">
+        <h1>Add a user</h1>
+
+        <div class="pt-5">
+            <form action="/add" method="post" id="add-form" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" name="name">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+                    <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Phone</label>
+                    <input type="tel" class="form-control" id="exampleInputEmail1" name="phone">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Select image</label>
+                    <input type="file" class="form-control" id="exampleInputEmail1" name="image">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Select image</label>
+                    <input type="submit" class="btn btn-sm px-4 btn-success" id="exampleInputEmail1" name="submit">
+                </div>
+                <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            </form>
+        </div>
+    </div>
+</section>
+
+<%- include('layouts/footer') %>
