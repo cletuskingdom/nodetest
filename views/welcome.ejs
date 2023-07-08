@@ -16,7 +16,7 @@
 
             <% if(users != '') { %>
                 <table class="table">
-                    <thead class="table-dark text-center">
+                    <thead class="table-dark text-center my-3">
                         <tr>
                             <th scope="col">ID</th>
                             <th scope="col">Image</th>
@@ -29,10 +29,10 @@
 
                     <tbody>
                         <% users.forEach((row, index) => { %>
-                            <tr class="text-center">
+                            <tr class="align-middle">
                                 <th scope="row"><%= index%></th>
                                 <td>
-                                    <img src="<%= row.image %>" width="50" class="img-thumbnail" />
+                                    <img src="<%= row.image %>" height="50" width="50" class="img-thumbnail" />
                                 </td>
                                 <td><%= row.name %></td>
                                 <td><%= row.email %></td>
