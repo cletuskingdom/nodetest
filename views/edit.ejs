@@ -3,33 +3,36 @@
 
 <section>
     <div class="container py-5">
-        <h1>Add a user</h1>
+        <h1>Edit a user (<%= user.name%>)</h1>
 
         <div class="pt-5">
-            <form action="/add" method="post" id="add-form" enctype="multipart/form-data">
+            <form action="/update/<%= user._id %>" method="post" id="add-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Name</label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" name="name">
+                    <input type="text" class="form-control" id="exampleInputEmail1" name="name" value="<%= user.name %>">
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value="<%= user.email %>">
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Phone</label>
-                    <input type="tel" class="form-control" id="exampleInputEmail1" name="phone">
+                    <input type="tel" class="form-control" id="exampleInputEmail1" name="phone" value="<%= user.phone %>">
                 </div>
 
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Select image</label>
                     <input type="file" class="form-control" id="exampleInputEmail1" name="image">
+                    
+                    <img src="/<%= user.image %>" width="100" class="img-thumbnail mt-1">
+                    <input type="hidden" name="old_image" value="/<%= user.image %>">
                 </div>
 
                 <div class="mb-3">
-                    <input type="submit" class="btn btn-sm px-4 btn-success" id="exampleInputEmail1" name="submit">
+                    <input type="submit" class="btn btn-sm px-4 btn-success" id="exampleInputEmail1" name="submit" value="Update user">
                 </div>
                 <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
             </form>
