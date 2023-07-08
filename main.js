@@ -37,9 +37,10 @@ app.use((req, res, next) => {
 // Set template engine
 app.set("view engine", "ejs");
 
-// Route prefix
+// Route prefix - this points to all my routes
 app.use("", require("./routes/routes"));
 
+// Start the server
 app.listen(port, () => {
 	console.log(`Server listening on port http://localhost:${port}`);
 });
