@@ -119,19 +119,35 @@ router.post("/update/:id", upload, async (req, res) => {
 		};
 		res.redirect("/");
 	}
+});
 
-	// if (update_user) {
-	// 	req.session.message = {
-	// 		type: "success",
-	// 		message: "User udpated successfully",
-	// 	};
-	// 	res.redirect("/");
-	// } else {
-	// 	res.json({
-	// 		type: "danger",
-	// 		message: err.message,
-	// 	});
-	// }
+// delete a user
+router.get("/delete/:id", async (req, res) => {
+	let id = req.params.id;
+
+	// Update the user by ID
+	const delete_user = await User.findByIdAndDelete(id);
+
+	if (delete_user.image != "") {
+		try {
+			fs.unlinkSync("./uploads/" + delete_user.image);
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	if (!delete_user) {
+		res.json({
+			type: "danger",
+			message: err.message,
+		});
+	} else {
+		req.session.message = {
+			type: "info",
+			message: "User deleted successfully",
+		};
+		res.redirect("/");
+	}
 });
 
 module.exports = router;
