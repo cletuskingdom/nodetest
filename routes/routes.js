@@ -1,9 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const User = require("./../models/users");
 const multer = require("multer");
 const fs = require("fs");
-const bcrypt = require("bcrypt");
+const User = require("./../models/users");
+const authController = require("./../controller/authController");
+
+// Implement a middleware function to restrict access to protected routes:
+function requireLogin(req, res, next) {
+	if (!req.session.userId) {
+		return res.redirect("/login"); // Redirect unauthenticated users to the login page
+	}
+	next(); // If authenticated, proceed to the next middleware or route handler
+}
 
 // Image upload
 var storage = multer.diskStorage({
@@ -19,14 +27,6 @@ var upload = multer({
 	storage: storage,
 }).single("image");
 
-// Implement a middleware function to restrict access to protected routes:
-function requireLogin(req, res, next) {
-	if (!req.session.userId) {
-		return res.redirect("/login"); // Redirect unauthenticated users to the login page
-	}
-	next(); // If authenticated, proceed to the next middleware or route handler
-}
-
 // Home route
 router.get("/", async (req, res) => {
 	// Get all users
@@ -37,9 +37,6 @@ router.get("/", async (req, res) => {
 			message: err.message,
 		});
 	} else {
-		const online = req.session;
-		console.log(online);
-		return false;
 		res.render("welcome", {
 			title: "Home Page",
 			users: users,
@@ -163,111 +160,22 @@ router.get("/delete/:id", async (req, res) => {
 });
 
 // view the login page
-router.get("/login", (req, res) => {
-	res.render("auth/login", {
-		title: "Login",
-	});
-});
+router.get("/login", authController.viewLogin);
 
 // login a user
-router.post("/login", async (req, res) => {
-	const { email, password } = req.body;
-
-	// Find the user in the database
-	const user = await User.findOne({ email: email });
-	if (!user) {
-		req.session.message = {
-			type: "danger",
-			message: "Invalid crendentials",
-		};
-		res.redirect("/login");
-	} else {
-		// Compare the entered password with the stored hashed password
-		const passwordMatch = bcrypt.compareSync(password, user.password);
-		if (!passwordMatch) {
-			req.session.message = {
-				type: "danger",
-				message: "Invalid crendentials",
-			};
-			res.redirect("/login");
-		} else {
-			// Create a session and store the user ID
-			req.session.userId = user._id;
-			res.redirect("/dashboard");
-		}
-	}
-});
+router.post("/login", authController.login);
 
 // view the register page
-router.get("/register", (req, res) => {
-	res.render("auth/register", {
-		title: "Register",
-	});
-});
+router.get("/register", authController.viewRegister);
 
 // register a user
-router.post("/register", async (req, res) => {
-	const { name, email, phone, password } = req.body;
-
-	// Check if the username already exists in the database
-	// const existingUser = User.find((user) => user.email === email);
-	// if (existingUser) {
-	// 	return res.status(409).send("Username already exists");
-	// }
-
-	const saltRounds = 10;
-
-	// Function to hash a password
-	function hashPassword(password) {
-		return bcrypt.hashSync(password, saltRounds);
-	}
-
-	// //============ Function to compare a password with a hashed password
-	// function comparePassword(password, hashedPassword) {
-	// 	return bcrypt.compareSync(password, hashedPassword);
-	// }
-
-	// //============ Compare the password
-	// const isPasswordMatch = comparePassword(plainPassword, hashedPassword);
-	// console.log('Password match:', isPasswordMatch);
-
-	// Hash the password
-	const hashedPassword = hashPassword(password);
-
-	try {
-		// Save the users in the database
-		const users = new User({
-			name: req.body.name,
-			email: req.body.email,
-			phone: req.body.phone,
-			password: hashedPassword,
-		});
-
-		var save_user = users.save();
-		if (save_user) {
-			req.session.message = {
-				type: "success",
-				message: "Registered successfully",
-			};
-			res.redirect("/");
-		} else {
-			res.json({
-				type: "danger",
-				message: err.message,
-			});
-		}
-	} catch (err) {
-		console.log(err);
-	}
-});
+router.post("/register", authController.register);
 
 // Protected route - only accessible after successful login
 router.get("/dashboard", requireLogin, (req, res) => {
-	if (!req.session.userId) {
-		return res.status(401).send("Unauthorized");
-	}
-
-	res.send("Welcome to the dashboard");
+	res.render("user/dashboard", {
+		title: "Dashboard",
+	});
 });
 
 // Logout route
