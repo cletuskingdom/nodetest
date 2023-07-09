@@ -19,6 +19,14 @@ var upload = multer({
 	storage: storage,
 }).single("image");
 
+// Implement a middleware function to restrict access to protected routes:
+function requireLogin(req, res, next) {
+	if (!req.session.userId) {
+		return res.redirect("/login"); // Redirect unauthenticated users to the login page
+	}
+	next(); // If authenticated, proceed to the next middleware or route handler
+}
+
 // Home route
 router.get("/", async (req, res) => {
 	// Get all users
@@ -29,6 +37,9 @@ router.get("/", async (req, res) => {
 			message: err.message,
 		});
 	} else {
+		const online = req.session;
+		console.log(online);
+		return false;
 		res.render("welcome", {
 			title: "Home Page",
 			users: users,
@@ -251,7 +262,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Protected route - only accessible after successful login
-router.get("/dashboard", (req, res) => {
+router.get("/dashboard", requireLogin, (req, res) => {
 	if (!req.session.userId) {
 		return res.status(401).send("Unauthorized");
 	}
@@ -260,7 +271,7 @@ router.get("/dashboard", (req, res) => {
 });
 
 // Logout route
-router.get("/logout", (req, res) => {
+router.get("/logout", requireLogin, (req, res) => {
 	req.session.destroy();
 	res.send("Logged out successfully");
 });
