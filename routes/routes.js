@@ -159,11 +159,32 @@ router.get("/login", (req, res) => {
 });
 
 // login a user
-router.post("/login", (req, res) => {
-	console.log(req.body.email);
-	// res.render("auth/login", {
-	// 	title: "Login",
-	// });
+router.post("/login", async (req, res) => {
+	const { email, password } = req.body;
+
+	// Find the user in the database
+	const user = await User.findOne({ email: email });
+	if (!user) {
+		req.session.message = {
+			type: "danger",
+			message: "Invalid crendentials",
+		};
+		res.redirect("/login");
+	} else {
+		// Compare the entered password with the stored hashed password
+		const passwordMatch = bcrypt.compareSync(password, user.password);
+		if (!passwordMatch) {
+			req.session.message = {
+				type: "danger",
+				message: "Invalid crendentials",
+			};
+			res.redirect("/login");
+		} else {
+			// Create a session and store the user ID
+			req.session.userId = user._id;
+			res.redirect("/dashboard");
+		}
+	}
 });
 
 // view the register page
@@ -175,8 +196,15 @@ router.get("/register", (req, res) => {
 
 // register a user
 router.post("/register", async (req, res) => {
+	const { name, email, phone, password } = req.body;
+
+	// Check if the username already exists in the database
+	// const existingUser = User.find((user) => user.email === email);
+	// if (existingUser) {
+	// 	return res.status(409).send("Username already exists");
+	// }
+
 	const saltRounds = 10;
-	const password = req.body.password;
 
 	// Function to hash a password
 	function hashPassword(password) {
@@ -220,6 +248,21 @@ router.post("/register", async (req, res) => {
 	} catch (err) {
 		console.log(err);
 	}
+});
+
+// Protected route - only accessible after successful login
+router.get("/dashboard", (req, res) => {
+	if (!req.session.userId) {
+		return res.status(401).send("Unauthorized");
+	}
+
+	res.send("Welcome to the dashboard");
+});
+
+// Logout route
+router.get("/logout", (req, res) => {
+	req.session.destroy();
+	res.send("Logged out successfully");
 });
 
 module.exports = router;
