@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("./../models/users");
 const multer = require("multer");
 const fs = require("fs");
+const bcrypt = require("bcrypt");
 
 // Image upload
 var storage = multer.diskStorage({
@@ -147,6 +148,77 @@ router.get("/delete/:id", async (req, res) => {
 			message: "User deleted successfully",
 		};
 		res.redirect("/");
+	}
+});
+
+// view the login page
+router.get("/login", (req, res) => {
+	res.render("auth/login", {
+		title: "Login",
+	});
+});
+
+// login a user
+router.post("/login", (req, res) => {
+	console.log(req.body.email);
+	// res.render("auth/login", {
+	// 	title: "Login",
+	// });
+});
+
+// view the register page
+router.get("/register", (req, res) => {
+	res.render("auth/register", {
+		title: "Register",
+	});
+});
+
+// register a user
+router.post("/register", async (req, res) => {
+	const saltRounds = 10;
+	const password = req.body.password;
+
+	// Function to hash a password
+	function hashPassword(password) {
+		return bcrypt.hashSync(password, saltRounds);
+	}
+
+	// //============ Function to compare a password with a hashed password
+	// function comparePassword(password, hashedPassword) {
+	// 	return bcrypt.compareSync(password, hashedPassword);
+	// }
+
+	// //============ Compare the password
+	// const isPasswordMatch = comparePassword(plainPassword, hashedPassword);
+	// console.log('Password match:', isPasswordMatch);
+
+	// Hash the password
+	const hashedPassword = hashPassword(password);
+
+	try {
+		// Save the users in the database
+		const users = new User({
+			name: req.body.name,
+			email: req.body.email,
+			phone: req.body.phone,
+			password: hashedPassword,
+		});
+
+		var save_user = users.save();
+		if (save_user) {
+			req.session.message = {
+				type: "success",
+				message: "Registered successfully",
+			};
+			res.redirect("/");
+		} else {
+			res.json({
+				type: "danger",
+				message: err.message,
+			});
+		}
+	} catch (err) {
+		console.log(err);
 	}
 });
 

@@ -1,0 +1,41 @@
+<%- include('../layouts/header') %>
+
+<section>
+    <div class="container py-5">
+        <h3>Register</h3>
+
+        <div class="py-3">
+            <!-- <% if(message) { %>
+                <div class="alert alert-dismissible fade show alert-<%= message.type %>" role="alert">
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+
+                    <strong><%= message.message %></strong>
+                </div>
+            <% } %> -->
+
+            <form method="post" action="/register" class="pt-3">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="name" placeholder="Cletus Kingdom">
+                </div>
+
+                <div class="mb-3">
+                    <input type="email" class="form-control" name="email" placeholder="cletuskingdom1055@gmail.com">
+                </div>
+
+                <div class="mb-3">
+                    <input type="tel" class="form-control" name="phone" placeholder="08062777007">
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="********">
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-success" type="submit">Login <i class="fa-sm mx-1 fa fas-solid fa-paper-plane ps-1"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<%- include('../layouts/footer') %>
