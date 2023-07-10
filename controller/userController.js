@@ -48,8 +48,6 @@ const addUsers = (req, res) => {
 
 const viewEditUserPage = async (req, res) => {
 	let id = req.params.id;
-	User.findById(id);
-
 	var user = await User.findById(id);
 
 	if (!user) {
@@ -57,7 +55,7 @@ const viewEditUserPage = async (req, res) => {
 	} else {
 		res.render("edit", {
 			title: "Edit user page",
-			user: user,
+			user,
 		});
 	}
 };
@@ -67,9 +65,9 @@ const updateAUser = async (req, res) => {
 	let new_image = "";
 
 	if (req.file) {
-		new_image = req.file.fieldname;
+		new_image = req.file.filename;
 		try {
-			fs.unlinkSync("/uploads" + req.body.old_image);
+			fs.unlinkSync("./uploads/" + req.body.old_image);
 		} catch (err) {
 			console.log(err);
 		}
