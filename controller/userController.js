@@ -1,28 +1,5 @@
 const User = require("./../models/users");
-const multer = require("multer");
 const fs = require("fs");
-
-var upload = multer({
-	storage: storage,
-}).single("image");
-
-// Image upload
-var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "./uploads");
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
-	},
-});
-
-// Implement a middleware function to restrict access to protected routes:
-function requireLogin(req, res, next) {
-	if (!req.session.userId) {
-		return res.redirect("/login"); // Redirect unauthenticated users to the login page
-	}
-	next(); // If authenticated, proceed to the next middleware or route handler
-}
 
 const homePage = async (req, res) => {
 	// Get all users
@@ -151,8 +128,10 @@ const deleteAUser = async (req, res) => {
 };
 
 const dashboard = (req, res) => {
+	const usersEmail = req.session.email;
 	res.render("user/dashboard", {
 		title: "Dashboard",
+		usersEmail,
 	});
 };
 

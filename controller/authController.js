@@ -53,7 +53,9 @@ const login = async (req, res) => {
 			res.redirect("/login");
 		} else {
 			// Create a session and store the user ID
+			req.session.loggedIn = true;
 			req.session.userId = user._id;
+			req.session.email = email;
 			res.redirect("/dashboard");
 		}
 	}
@@ -115,7 +117,9 @@ const register = async (req, res) => {
 			};
 
 			// Create a session and store the user ID
+			req.session.loggedIn = true;
 			req.session.userId = users._id;
+			req.session.email = email;
 			res.redirect("/dashboard");
 		} else {
 			res.json({

@@ -9,7 +9,7 @@ const userController = require("./../controller/userController");
 
 // Implement a middleware function to restrict access to protected routes:
 function requireLogin(req, res, next) {
-	if (!req.session.userId) {
+	if (!req.session.userId || req.session.loggedIn === false) {
 		return res.redirect("/login"); // Redirect unauthenticated users to the login page
 	}
 	next(); // If authenticated, proceed to the next middleware or route handler

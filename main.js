@@ -7,8 +7,13 @@ const session = require("express-session");
 const app = express();
 const port = process.env.PORT || 2000;
 
+const DB_URL =
+	process.env.NODE_ENV === "production"
+		? process.env.PRODUCTION_DB_URL
+		: process.env.LOCAL_DB_URL;
+
 // database connection
-mongoose.connect(process.env.PROD_DB_URL, {
+mongoose.connect(DB_URL, {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 });
