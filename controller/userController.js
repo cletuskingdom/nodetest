@@ -92,7 +92,7 @@ const updateAUser = async (req, res) => {
 	if (req.file) {
 		new_image = req.file.fieldname;
 		try {
-			fs.unlinkSync("./uploads" + req.body.old_image);
+			fs.unlinkSync("/uploads" + req.body.old_image);
 		} catch (err) {
 			console.log(err);
 		}
