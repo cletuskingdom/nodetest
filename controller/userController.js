@@ -126,10 +126,8 @@ const deleteAUser = async (req, res) => {
 };
 
 const dashboard = (req, res) => {
-	const usersEmail = req.session.email;
 	res.render("user/dashboard", {
 		title: "Dashboard",
-		usersEmail,
 	});
 };
 

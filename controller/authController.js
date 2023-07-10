@@ -4,14 +4,6 @@ const User = require("./../models/users");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
-// Implement a middleware function to restrict access to protected routes:
-function requireLogin(req, res, next) {
-	if (!req.session.userId) {
-		return res.redirect("/login"); // Redirect unauthenticated users to the login page
-	}
-	next(); // If authenticated, proceed to the next middleware or route handler
-}
-
 // Apply session middleware as global middleware
 router.use(
 	session({
