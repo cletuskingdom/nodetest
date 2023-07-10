@@ -4,6 +4,8 @@ const multer = require("multer");
 const fs = require("fs");
 const User = require("./../models/users");
 const authController = require("./../controller/authController");
+const bcrypt = require("bcrypt");
+const userController = require("./../controller/userController");
 
 // Implement a middleware function to restrict access to protected routes:
 function requireLogin(req, res, next) {
@@ -27,137 +29,23 @@ var upload = multer({
 	storage: storage,
 }).single("image");
 
-// Home route
-router.get("/", async (req, res) => {
-	// Get all users
-	var users = await User.find();
-
-	if (!users) {
-		res.json({
-			message: err.message,
-		});
-	} else {
-		res.render("welcome", {
-			title: "Home Page",
-			users: users,
-		});
-	}
-});
+// Welcome route
+router.get("/", userController.homePage);
 
 // View add users page
-router.get("/add", (req, res) => {
-	res.render("add", {
-		title: "Add users",
-	});
-});
+router.get("/add", userController.viewAddUsersPage);
 
 // Add users now
-router.post("/add", upload, (req, res) => {
-	const users = new User({
-		name: req.body.name,
-		email: req.body.email,
-		phone: req.body.phone,
-		image: req.file.filename,
-	});
-	var save_user = users.save();
-	if (save_user) {
-		req.session.message = {
-			type: "success",
-			message: "User added successfully",
-		};
-		res.redirect("/");
-	} else {
-		res.json({
-			type: "danger",
-			message: err.message,
-		});
-	}
-});
+router.post("/add", upload, userController.addUsers);
 
 // View edit users page
-router.get("/edit/:id", async (req, res) => {
-	let id = req.params.id;
-	User.findById(id);
-
-	var user = await User.findById(id);
-
-	if (!user) {
-		res.redirect("/");
-	} else {
-		res.render("edit", {
-			title: "Edit user page",
-			user: user,
-		});
-	}
-});
+router.get("/edit/:id", userController.viewEditUserPage);
 
 // update a user
-router.post("/update/:id", upload, async (req, res) => {
-	let id = req.params.id;
-	let new_image = "";
-
-	if (req.file) {
-		new_image = req.file.filename;
-
-		try {
-			fs.unlinkSync("./uploads/" + req.body.old_iage);
-		} catch (err) {
-			console.log(err);
-		}
-	} else {
-		new_image = req.body.old_iage;
-	}
-
-	// Update the user by ID
-	const update_user = await User.findByIdAndUpdate(id, {
-		name: req.body.name,
-		email: req.body.email,
-		phone: req.body.phone,
-		image: new_image,
-	});
-
-	if (!update_user) {
-		res.json({
-			type: "danger",
-			message: err.message,
-		});
-	} else {
-		req.session.message = {
-			type: "success",
-			message: "User udpated successfully",
-		};
-		res.redirect("/");
-	}
-});
+router.post("/update/:id", upload, userController.updateAUser);
 
 // delete a user
-router.get("/delete/:id", async (req, res) => {
-	let id = req.params.id;
-
-	// Update the user by ID
-	const delete_user = await User.findByIdAndDelete(id);
-
-	if (delete_user.image != "") {
-		try {
-			fs.unlinkSync("./uploads/" + delete_user.image);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-
-	if (!delete_user) {
-		res.json({
-			type: "danger",
-			message: err.message,
-		});
-	} else {
-		req.session.message = {
-			type: "info",
-			message: "User deleted successfully",
-		};
-		res.redirect("/");
-	}
-});
+router.get("/delete/:id", userController.deleteAUser);
 
 // view the login page
 router.get("/login", authController.viewLogin);
@@ -169,19 +57,12 @@ router.post("/login", authController.login);
 router.get("/register", authController.viewRegister);
 
 // register a user
-router.post("/register", authController.register);
+router.post("/register", upload, authController.register);
 
 // Protected route - only accessible after successful login
-router.get("/dashboard", requireLogin, (req, res) => {
-	res.render("user/dashboard", {
-		title: "Dashboard",
-	});
-});
+router.get("/dashboard", requireLogin, userController.dashboard);
 
 // Logout route
-router.get("/logout", requireLogin, (req, res) => {
-	req.session.destroy();
-	res.send("Logged out successfully");
-});
+router.get("/logout", requireLogin, authController.logout);
 
 module.exports = router;

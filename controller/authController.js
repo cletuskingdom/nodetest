@@ -100,9 +100,10 @@ const register = async (req, res) => {
 	try {
 		// Save the users in the database
 		const users = new User({
-			name: req.body.name,
-			email: req.body.email,
-			phone: req.body.phone,
+			name: name,
+			email: email,
+			image: req.file.filename,
+			phone: phone,
 			password: hashedPassword,
 		});
 
@@ -127,10 +128,16 @@ const register = async (req, res) => {
 	}
 };
 
+const logout = (req, res) => {
+	req.session.destroy();
+	res.send("Logged out successfully");
+};
+
 // Export the controller functions
 module.exports = {
 	viewLogin,
 	login,
 	viewRegister,
 	register,
+	logout,
 };
