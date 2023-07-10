@@ -130,7 +130,7 @@ const register = async (req, res) => {
 
 const logout = (req, res) => {
 	req.session.destroy();
-	res.send("Logged out successfully");
+	res.redirect("/dashboard");
 };
 
 // Export the controller functions
